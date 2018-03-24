@@ -8,7 +8,7 @@ import Fish from './Fish';
 class App extends React.Component{
   state = {
     fishes: {},
-    order: {}
+    orders: {}
   };
 
   addFish = (fish) => {
@@ -21,13 +21,24 @@ class App extends React.Component{
     this.setState({ fishes: sampleFishes });
   }
 
+  addToOrder = (key) => {
+    const orders = {...this.state.orders};
+    orders[key] = orders[key] + 1 || 1;
+    this.setState({ orders });
+  }
+
   render() {
     return <div className="catch-of-the-day">
         <div className="menu">
           <Header tagline="Fresh Seafood Market" />
           <ul>
             {Object.keys(this.state.fishes).map(key => (
-              <Fish key={key} details={this.state.fishes[key]} />
+              <Fish
+                key={key}
+                index={key}
+                details={this.state.fishes[key]}
+                addToOrder={this.addToOrder}
+              />
             ))}
           </ul>
         </div>
