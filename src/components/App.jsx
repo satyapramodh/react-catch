@@ -6,54 +6,70 @@ import sampleFishes from '../sample-fishes';
 import Fish from './Fish';
 import base from '../base';
 
-class App extends React.Component{
+class App extends React.Component {
   state = {
     fishes: {},
     orders: {}
   };
 
-  componentDidMount(){
-    const {params} = this.props.match;
+  componentDidMount() {
+    const { params } = this.props.match;
     const orderRef = localStorage.getItem(params.storeId);
-    this.setState({ orders: JSON.parse(orderRef) });
-    this.ref = base.syncState(`${params.storeId}/fishes`,{
+    if(orderRef) {
+      console.log("orderRef", orderRef);
+      this.setState({ orders: JSON.parse(orderRef) });
+    }
+    this.ref = base.syncState(`${params.storeId}/fishes`, {
       context: this,
       state: "fishes"
     });
   }
 
-  componentDidUpdate(){
-    localStorage.setItem(this.props.match.params.storeId, JSON.stringify(this.state.orders));
+  componentDidUpdate() {
+    localStorage.setItem(
+      this.props.match.params.storeId,
+      JSON.stringify(this.state.orders)
+    );
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     base.removeBinding(this.ref);
   }
 
-  addFish = (fish) => {
-    const fishes = {...this.state.fishes};
+  addFish = fish => {
+    const fishes = { ...this.state.fishes };
     fishes[`fish${Date.now()}`] = fish;
     this.setState({ fishes });
   };
 
   updateFish = (key, fish) => {
-    const fishes = {...this.state.fishes};
+    const fishes = { ...this.state.fishes };
     fishes[key] = fish;
-    this.setState({fishes});
-  }
+    this.setState({ fishes });
+  };
+
+  removeFish = (key) => {
+    const fishes = { ...this.state.fishes };
+    // firebase needs the key value pair
+    // to be set to null to delete
+    fishes[key] = null;
+    this.setState({ fishes });
+  };
 
   loadSampleFishes = () => {
     this.setState({ fishes: sampleFishes });
-  }
+  };
 
-  addToOrder = (key) => {
-    const orders = {...this.state.orders};
+  addToOrder = key => {
+    const orders = { ...this.state.orders };
     orders[key] = orders[key] + 1 || 1;
+
     this.setState({ orders });
-  }
+  };
 
   render() {
-    return <div className="catch-of-the-day">
+    return (
+      <div className="catch-of-the-day">
         <div className="menu">
           <Header tagline="Fresh Seafood Market" />
           <ul>
@@ -72,8 +88,11 @@ class App extends React.Component{
           addFish={this.addFish}
           fishes={this.state.fishes}
           updateFish={this.updateFish}
-          loadSampleFishes={this.loadSampleFishes} />
-      </div>;
+          removeFish={this.removeFish}
+          loadSampleFishes={this.loadSampleFishes}
+        />
+      </div>
+    );
   }
 }
 
