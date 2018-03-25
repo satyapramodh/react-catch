@@ -16,7 +16,7 @@ class App extends React.Component {
     const { params } = this.props.match;
     const orderRef = localStorage.getItem(params.storeId);
     if (orderRef) {
-      console.log("orderRef", orderRef);
+      // console.log("orderRef", orderRef);
       this.setState({ orders: JSON.parse(orderRef) });
     }
     this.ref = base.syncState(`${params.storeId}/fishes`, {
