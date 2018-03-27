@@ -4,16 +4,19 @@ import StorePicker from './StorePicker';
 import App from './App';
 import NotFound from "./NotFound";
 
+// Fix github deployment using
+// https://github.com/facebook/create-react-app/issues/1765
+
 const Router = () => (
-  <BrowserRouter>
+  <BrowserRouter basename={process.env.PUBLIC_URL}>
     <Switch>
       <Route
         exact
-        path={process.env.PUBLIC_URL + "/"}
+        path="/"
         component={StorePicker}
       />
       <Route
-        path={process.env.PUBLIC_URL + "/store/:storeId"}
+        path="/store/:storeId"
         component={App}
       />
       <Route component={NotFound} />
